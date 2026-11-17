@@ -216,3 +216,30 @@ export interface SystemParam {
   description: string;
   updatedAt: string;
 }
+
+// 维保计划列表项（设备维保-维保计划页表格行）
+export interface MaintenancePlanListItem {
+  id: string;
+  name: string;            // 计划名称
+  type: '周期计划' | '临时计划' | '专项计划'; // 计划类型
+  deviceType: string;      // 设备类型
+  startDate: string;       // 计划开始执行日期 YYYY-MM-DD
+  endDate: string;         // 计划结束执行日期 YYYY-MM-DD
+  frequency: '日检' | '周检' | '月检' | '季检' | '半年检' | '年检' | '年保' | '季保' | '月保' | '周保' | '日保'; // 执行频率（列表用“检”，新增表单用“保”）
+  status: '启用' | '停用'; // 状态
+  creator: string;         // 创建人
+}
+
+// 维保计划查询条件
+export interface MaintenancePlanQuery {
+  name: string;      // 计划名称关键字（为空不过滤）
+  type: string;      // 计划类型（为空不过滤）
+  startDate: string; // 开始日期下限 YYYY-MM-DD（为空不过滤）
+  endDate: string;   // 开始日期上限 YYYY-MM-DD（为空不过滤）
+}
+
+// 维保计划统计
+export interface MaintenancePlanSummary {
+  total: number;        // 计划总数
+  enabledCount: number; // 启用中的计划数
+}
