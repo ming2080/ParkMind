@@ -243,3 +243,45 @@ export interface MaintenancePlanSummary {
   total: number;        // 计划总数
   enabledCount: number; // 启用中的计划数
 }
+
+// 黑名单告警处理状态
+export type BlacklistAlarmStatus = '未处理' | '已处理';
+
+// 人员黑名单告警列表项（安防告警-人员黑名单告警页表格行）
+export interface PersonnelBlacklistAlarm {
+  id: string;
+  code: string;          // 告警编号
+  type: '人员黑名单告警'; // 告警类型
+  deviceName: string;    // 设备名称
+  location: string;      // 设备位置
+  triggerTime: string;   // 告警时间 YYYY-MM-DD HH:mm
+  status: BlacklistAlarmStatus; // 处理状态
+  snapshot: string;      // 人脸抓拍图
+}
+
+// 车辆黑名单告警列表项（安防告警-车辆黑名单告警页表格行）
+export interface VehicleBlacklistAlarm {
+  id: string;
+  code: string;          // 告警编号
+  type: '车辆黑名单告警'; // 告警类型
+  deviceName: string;    // 设备名称
+  location: string;      // 设备位置
+  plateNo: string;       // 车牌号码
+  triggerTime: string;   // 告警时间 YYYY-MM-DD HH:mm
+  status: BlacklistAlarmStatus; // 处理状态
+  snapshot: string;      // 车牌抓拍图
+}
+
+// 黑名单告警查询条件
+export interface BlacklistAlarmQuery {
+  startDate: string; // 触发日期下限 YYYY-MM-DD（为空不过滤）
+  endDate: string;   // 触发日期上限 YYYY-MM-DD（为空不过滤）
+  plateNo: string;   // 车牌关键字（仅车辆黑名单页使用，人员页留空）
+}
+
+// 黑名单告警统计
+export interface BlacklistAlarmSummary {
+  total: number;         // 告警总数
+  handledCount: number;  // 已处理数
+  unhandledCount: number; // 未处理数
+}
