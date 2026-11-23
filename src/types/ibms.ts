@@ -285,3 +285,29 @@ export interface BlacklistAlarmSummary {
   handledCount: number;  // 已处理数
   unhandledCount: number; // 未处理数
 }
+
+// 入侵告警列表项（安防告警-入侵告警页表格行）
+export interface IntrusionAlarm {
+  id: string;
+  code: string;          // 告警编号
+  type: '入侵告警';      // 告警类型
+  deviceName: string;    // 设备名称
+  location: string;      // 设备位置
+  triggerTime: string;   // 告警时间 YYYY-MM-DD HH:mm
+  status: BlacklistAlarmStatus; // 处理状态
+  snapshot: string;      // 人员抓拍图
+}
+
+// 入侵告警查询条件
+export interface IntrusionAlarmQuery {
+  startDate: string; // 触发日期下限 YYYY-MM-DD（为空不过滤）
+  endDate: string;   // 触发日期上限 YYYY-MM-DD（为空不过滤）
+  keyword: string;   // 设备名称/编号/位置关键字（包含匹配，为空不过滤）
+}
+
+// 入侵告警统计
+export interface IntrusionAlarmSummary {
+  total: number;         // 告警总数
+  handledCount: number;  // 已处理数
+  unhandledCount: number; // 未处理数
+}

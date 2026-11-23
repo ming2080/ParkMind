@@ -44,6 +44,11 @@ import {
   filterVehicleBlacklistAlarms,
   summarizeBlacklistAlarms,
 } from '../data/blacklistAlarms';
+import {
+  INITIAL_INTRUSION_ALARMS,
+  filterIntrusionAlarms,
+  summarizeIntrusionAlarms,
+} from '../data/intrusionAlarms';
 import asianMaleImg from '../assets/images/asian_male_portrait_1794054874770.jpg';
 import asianFemaleImg from '../assets/images/asian_female_portrait_1794054893192.jpg';
 import asianGlassesImg from '../assets/images/asian_man_glasses_1794054909500.jpg';
@@ -210,33 +215,26 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
   );
 
   // Intrusion Alarms List (25 items)
-  const [intrusionAlarms, setIntrusionAlarms] = useState([
-    { id: 'int-1', code: 'B2009OC001DH001', type: '入侵告警', deviceName: '入侵感应器', location: 'T1-B1东南角', triggerTime: '2026-11-06 16:00', status: '未处理', snapshot: asianFemaleImg },
-    { id: 'int-2', code: 'B2009OC001DH002', type: '入侵告警', deviceName: '入侵感应器', location: 'T1-B1西北角', triggerTime: '2026-11-06 14:09', status: '已处理', snapshot: asianMaleImg },
-    { id: 'int-3', code: 'B2009OC001DH003', type: '入侵告警', deviceName: '红外对射探测器01', location: '园区东侧围墙', triggerTime: '2026-11-05 11:20', status: '未处理', snapshot: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=120&auto=format&fit=crop&q=80' },
-    { id: 'int-4', code: 'B2009OC001DH004', type: '入侵告警', deviceName: '微波周界感应器', location: 'T2大楼屋顶', triggerTime: '2026-11-05 09:15', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'int-5', code: 'B2009OC001DH005', type: '入侵告警', deviceName: '双鉴探测器02', location: '地下车库B2区', triggerTime: '2026-11-04 15:40', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'int-6', code: 'B2009OC001DH006', type: '入侵告警', deviceName: '激光对射报警器', location: '园区西侧边界', triggerTime: '2026-11-04 10:22', status: '未处理', snapshot: asianMaleImg },
-    { id: 'int-7', code: 'B2009OC001DH007', type: '入侵告警', deviceName: '震动光纤传感器', location: '主水泵房外围', triggerTime: '2026-11-03 16:50', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'int-8', code: 'B2009OC001DH008', type: '入侵告警', deviceName: '电子围栏控制器', location: '变配电所外墙', triggerTime: '2026-11-03 13:10', status: '已处理', snapshot: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=120&auto=format&fit=crop&q=80' },
-    { id: 'int-9', code: 'B2009OC001DH009', type: '入侵告警', deviceName: '红外光栅03', location: '贵宾通道北侧', triggerTime: '2026-11-02 08:35', status: '未处理', snapshot: asianFemaleImg },
-    { id: 'int-10', code: 'B2009OC001DH010', type: '入侵告警', deviceName: '入侵感应器04', location: '物流卸货平台', triggerTime: '2026-11-01 19:20', status: '已处理', snapshot: asianMaleImg },
-    { id: 'int-11', code: 'B2009OC001DH011', type: '入侵告警', deviceName: '室外微波多相雷达', location: '园区北界围栏', triggerTime: '2026-10-31 16:30', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'int-12', code: 'B2009OC001DH012', type: '入侵告警', deviceName: '变电站防护栅栏感知器', location: '10kV变压器外防护网', triggerTime: '2026-10-31 11:00', status: '未处理', snapshot: asianFemaleImg },
-    { id: 'int-13', code: 'B2009OC001DH013', type: '入侵告警', deviceName: '天台消防门开门报警器', location: 'T2-屋顶平台', triggerTime: '2026-10-30 18:15', status: '已处理', snapshot: asianMaleImg },
-    { id: 'int-14', code: 'B2009OC001DH014', type: '入侵告警', deviceName: '红外对射探测器04', location: '园区南侧栏杆', triggerTime: '2026-10-30 13:40', status: '未处理', snapshot: asianGlassesImg },
-    { id: 'int-15', code: 'B2009OC001DH015', type: '入侵告警', deviceName: '地下通风井防盗传感器', location: 'B2地下采光井', triggerTime: '2026-10-29 19:20', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'int-16', code: 'B2009OC001DH016', type: '入侵告警', deviceName: '激光幕墙探针', location: '数据中心外立面玻璃', triggerTime: '2026-10-29 08:30', status: '已处理', snapshot: asianMaleImg },
-    { id: 'int-17', code: 'B2009OC001DH017', type: '入侵告警', deviceName: '双鉴微波探头09', location: 'T1-B1枪库间外走廊', triggerTime: '2026-10-28 17:10', status: '未处理', snapshot: asianGlassesImg },
-    { id: 'int-18', code: 'B2009OC001DH018', type: '入侵告警', deviceName: '周边防翻越震动传感缆', location: '西北角竹林围墙', triggerTime: '2026-10-28 10:45', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'int-19', code: 'B2009OC001DH019', type: '入侵告警', deviceName: '光纤振动防入侵系统', location: '高压电缆隧道口', triggerTime: '2026-10-27 15:30', status: '未处理', snapshot: asianMaleImg },
-    { id: 'int-20', code: 'B2009OC001DH020', type: '入侵告警', deviceName: '红外对射05', location: '园区西侧防护绿化带', triggerTime: '2026-10-27 09:10', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'int-21', code: 'B2009OC001DH021', type: '入侵告警', deviceName: '水泵房防越警报器', location: 'T3-B2生活水泵房', triggerTime: '2026-10-26 18:00', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'int-22', code: 'B2009OC001DH022', type: '入侵告警', deviceName: '微波周界感应器02', location: 'T1-屋顶冷塔区域', triggerTime: '2026-10-26 12:20', status: '未处理', snapshot: asianMaleImg },
-    { id: 'int-23', code: 'B2009OC001DH023', type: '入侵告警', deviceName: '电子围栏前置探测箱', location: '东侧变电站围墙', triggerTime: '2026-10-25 16:15', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'int-24', code: 'B2009OC001DH024', type: '入侵告警', deviceName: '红外被动式探针08', location: 'T2-1F财务重地窗外', triggerTime: '2026-10-25 11:30', status: '未处理', snapshot: asianFemaleImg },
-    { id: 'int-25', code: 'B2009OC001DH025', type: '入侵告警', deviceName: '高精度红外光栅', location: '园区东北角大门顶', triggerTime: '2026-10-24 14:50', status: '已处理', snapshot: asianMaleImg },
-  ]);
+  const [intrusionAlarms, setIntrusionAlarms] = useState(INITIAL_INTRUSION_ALARMS);
+
+  // 入侵告警查询条件（默认覆盖全部 25 条记录的触发日期范围）
+  const [intrusionQueryStartDate, setIntrusionQueryStartDate] = useState('2026-10-24');
+  const [intrusionQueryEndDate, setIntrusionQueryEndDate] = useState('2026-11-06');
+  const [intrusionQueryKeyword, setIntrusionQueryKeyword] = useState('');
+
+  // 入侵告警统计与过滤后的列表
+  const intrusionSummary = useMemo(
+    () => summarizeIntrusionAlarms(intrusionAlarms),
+    [intrusionAlarms],
+  );
+  const filteredIntrusionAlarms = useMemo(
+    () => filterIntrusionAlarms(intrusionAlarms, {
+      startDate: intrusionQueryStartDate,
+      endDate: intrusionQueryEndDate,
+      keyword: intrusionQueryKeyword,
+    }),
+    [intrusionAlarms, intrusionQueryStartDate, intrusionQueryEndDate, intrusionQueryKeyword],
+  );
 
   // Perimeter Alarms List (25 items)
   const [perimeterAlarms, setPerimeterAlarms] = useState([
@@ -2171,7 +2169,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
               <div className="p-4 rounded-2xl bg-[#06122d] border border-cyan-500/40 relative overflow-hidden shadow-xl flex items-center justify-between">
                 <div>
                   <div className="text-xs text-slate-400 font-bold">本月入侵告警</div>
-                  <div className="text-3xl font-bold font-mono text-cyan-300 mt-1">31</div>
+                  <div className="text-3xl font-bold font-mono text-cyan-300 mt-1">{intrusionSummary.total}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.4)]">
                   <ShieldAlert className="w-6 h-6 animate-pulse" />
@@ -2191,7 +2189,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
               <div className="p-4 rounded-2xl bg-[#06122d] border border-cyan-500/40 relative overflow-hidden shadow-xl flex items-center justify-between">
                 <div>
                   <div className="text-xs text-slate-400 font-bold">已处理</div>
-                  <div className="text-3xl font-bold font-mono text-emerald-400 mt-1">20</div>
+                  <div className="text-3xl font-bold font-mono text-emerald-400 mt-1">{intrusionSummary.handledCount}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.4)]">
                   <CheckCircle2 className="w-6 h-6" />
@@ -2201,7 +2199,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
               <div className="p-4 rounded-2xl bg-[#06122d] border border-cyan-500/40 relative overflow-hidden shadow-xl flex items-center justify-between">
                 <div>
                   <div className="text-xs text-slate-400 font-bold">未处理</div>
-                  <div className="text-3xl font-bold font-mono text-red-400 mt-1">11</div>
+                  <div className="text-3xl font-bold font-mono text-red-400 mt-1">{intrusionSummary.unhandledCount}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-red-500/20 border border-red-400/50 flex items-center justify-center text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.4)]">
                   <ShieldAlert className="w-6 h-6 animate-pulse" />
@@ -2213,24 +2211,34 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
             <div className="bg-[#06122d] border border-cyan-500/40 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-xl">
               <div className="flex flex-wrap items-center gap-3 text-xs">
                 <span className="text-slate-300 font-bold">查询:</span>
-                <input 
-                  type="date" 
-                  defaultValue="2026-11-01" 
-                  className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white focus:outline-none focus:border-cyan-400 font-mono text-xs" 
+                <input
+                  type="date"
+                  value={intrusionQueryStartDate}
+                  onChange={(e) => { setIntrusionQueryStartDate(e.target.value); setIntrusionPage(1); }}
+                  className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white focus:outline-none focus:border-cyan-400 font-mono text-xs"
                 />
                 <span className="text-slate-500">-</span>
-                <input 
-                  type="date" 
-                  defaultValue="2026-11-06" 
-                  className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white focus:outline-none focus:border-cyan-400 font-mono text-xs" 
+                <input
+                  type="date"
+                  value={intrusionQueryEndDate}
+                  onChange={(e) => { setIntrusionQueryEndDate(e.target.value); setIntrusionPage(1); }}
+                  className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white focus:outline-none focus:border-cyan-400 font-mono text-xs"
                 />
-                <input 
-                  type="text" 
-                  placeholder="入侵设备/编号" 
-                  className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-xs w-36" 
+                <input
+                  type="text"
+                  placeholder="入侵设备/编号"
+                  value={intrusionQueryKeyword}
+                  onChange={(e) => { setIntrusionQueryKeyword(e.target.value); setIntrusionPage(1); }}
+                  className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-xs w-36"
                 />
-                <button 
-                  onClick={() => triggerToast('已重置入侵告警查询条件')}
+                <button
+                  onClick={() => {
+                    setIntrusionQueryStartDate('2026-10-24');
+                    setIntrusionQueryEndDate('2026-11-06');
+                    setIntrusionQueryKeyword('');
+                    setIntrusionPage(1);
+                    triggerToast('已重置入侵告警查询条件');
+                  }}
                   className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold transition-all cursor-pointer"
                 >
                   重置
@@ -2264,7 +2272,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#133063]">
-                    {intrusionAlarms.slice((intrusionPage - 1) * 10, intrusionPage * 10).map((item, index) => (
+                    {filteredIntrusionAlarms.slice((intrusionPage - 1) * 10, intrusionPage * 10).map((item, index) => (
                       <tr key={item.id} className="hover:bg-[#081b42]/80 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white">{item.code}</td>
                         <td className="px-4 py-3.5 font-sans text-cyan-300 font-semibold">{item.type}</td>
@@ -2322,9 +2330,9 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
 
               <PaginationControls
                 currentPage={intrusionPage}
-                totalItems={intrusionAlarms.length}
+                totalItems={filteredIntrusionAlarms.length}
                 onPageChange={setIntrusionPage}
-                onExport={() => handleExportCSV(intrusionAlarms, '入侵告警_数据导出.csv')}
+                onExport={() => handleExportCSV(filteredIntrusionAlarms, '入侵告警_数据导出.csv')}
               />
             </div>
           </div>
