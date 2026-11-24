@@ -311,3 +311,30 @@ export interface IntrusionAlarmSummary {
   handledCount: number;  // 已处理数
   unhandledCount: number; // 未处理数
 }
+
+// 周界告警列表项（安防告警-周界告警页表格行）
+export interface PerimeterAlarm {
+  id: string;
+  code: string;          // 告警编号
+  type: '周界告警';      // 告警类型
+  deviceName: string;    // 设备名称
+  location: string;      // 设备位置
+  zone: string;          // 入侵区域
+  triggerTime: string;   // 告警时间 YYYY-MM-DD HH:mm
+  status: BlacklistAlarmStatus; // 处理状态
+  snapshot: string;      // 人员抓拍图
+}
+
+// 周界告警查询条件
+export interface PerimeterAlarmQuery {
+  startDate: string; // 触发日期下限 YYYY-MM-DD（为空不过滤）
+  endDate: string;   // 触发日期上限 YYYY-MM-DD（为空不过滤）
+  keyword: string;   // 设备名称/编号/区域关键字（包含匹配，为空不过滤）
+}
+
+// 周界告警统计
+export interface PerimeterAlarmSummary {
+  total: number;         // 告警总数
+  handledCount: number;  // 已处理数
+  unhandledCount: number; // 未处理数
+}

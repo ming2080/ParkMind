@@ -49,6 +49,11 @@ import {
   filterIntrusionAlarms,
   summarizeIntrusionAlarms,
 } from '../data/intrusionAlarms';
+import {
+  INITIAL_PERIMETER_ALARMS,
+  filterPerimeterAlarms,
+  summarizePerimeterAlarms,
+} from '../data/perimeterAlarms';
 import asianMaleImg from '../assets/images/asian_male_portrait_1794054874770.jpg';
 import asianFemaleImg from '../assets/images/asian_female_portrait_1794054893192.jpg';
 import asianGlassesImg from '../assets/images/asian_man_glasses_1794054909500.jpg';
@@ -237,33 +242,26 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
   );
 
   // Perimeter Alarms List (25 items)
-  const [perimeterAlarms, setPerimeterAlarms] = useState([
-    { id: 'per-1', code: 'B2009OC001DH001', type: '周界告警', deviceName: '周界主机', location: '室外', zone: 'A区', triggerTime: '2026-11-06 16:00', status: '未处理', snapshot: asianFemaleImg },
-    { id: 'per-2', code: 'B2009OC001DH002', type: '周界告警', deviceName: '周界主机', location: '室外', zone: 'B区', triggerTime: '2026-11-06 14:09', status: '已处理', snapshot: asianMaleImg },
-    { id: 'per-3', code: 'B2009OC001DH003', type: '周界告警', deviceName: '周界脉冲主机01', location: '室外', zone: 'C区', triggerTime: '2026-11-05 11:20', status: '未处理', snapshot: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=120&auto=format&fit=crop&q=80' },
-    { id: 'per-4', code: 'B2009OC001DH004', type: '周界告警', deviceName: '电子围栏控制器', location: '室外', zone: 'D区', triggerTime: '2026-11-05 09:15', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'per-5', code: 'B2009OC001DH005', type: '周界告警', deviceName: '红外对射光栅', location: '室外', zone: 'E区', triggerTime: '2026-11-04 15:40', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'per-6', code: 'B2009OC001DH006', type: '周界告警', deviceName: '周界主机02', location: '室外', zone: 'F区', triggerTime: '2026-11-04 10:22', status: '未处理', snapshot: asianMaleImg },
-    { id: 'per-7', code: 'B2009OC001DH007', type: '周界告警', deviceName: '震动光纤分析仪', location: '室外', zone: 'G区', triggerTime: '2026-11-03 16:50', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'per-8', code: 'B2009OC001DH008', type: '周界告警', deviceName: '激光对射报警器', location: '室外', zone: 'H区', triggerTime: '2026-11-03 13:10', status: '已处理', snapshot: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=120&auto=format&fit=crop&q=80' },
-    { id: 'per-9', code: 'B2009OC001DH009', type: '周界告警', deviceName: '周界微波感应器', location: '室外', zone: 'I区', triggerTime: '2026-11-02 08:35', status: '未处理', snapshot: asianFemaleImg },
-    { id: 'per-10', code: 'B2009OC001DH010', type: '周界告警', deviceName: '周界主机主站', location: '室外', zone: 'J区', triggerTime: '2026-11-01 19:20', status: '已处理', snapshot: asianMaleImg },
-    { id: 'per-11', code: 'B2009OC001DH011', type: '周界告警', deviceName: '高压脉冲前端电子围栏', location: '室外', zone: 'K区', triggerTime: '2026-10-31 15:45', status: '未处理', snapshot: asianGlassesImg },
-    { id: 'per-12', code: 'B2009OC001DH012', type: '周界告警', deviceName: '张力围栏控制器', location: '室外', zone: 'L区', triggerTime: '2026-10-31 10:30', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'per-13', code: 'B2009OC001DH013', type: '周界告警', deviceName: '周界智能光纤采集盒', location: '室外', zone: 'M区', triggerTime: '2026-10-30 17:15', status: '已处理', snapshot: asianMaleImg },
-    { id: 'per-14', code: 'B2009OC001DH014', type: '周界告警', deviceName: '三鉴周界探测器03', location: '室外', zone: 'N区', triggerTime: '2026-10-30 12:40', status: '未处理', snapshot: asianGlassesImg },
-    { id: 'per-15', code: 'B2009OC001DH015', type: '周界告警', deviceName: '雷达雷视一体周界终端', location: '室外', zone: 'O区', triggerTime: '2026-10-29 18:50', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'per-16', code: 'B2009OC001DH016', type: '周界告警', deviceName: '红外对射报警主机', location: '室外', zone: 'P区', triggerTime: '2026-10-29 09:10', status: '已处理', snapshot: asianMaleImg },
-    { id: 'per-17', code: 'B2009OC001DH017', type: '周界告警', deviceName: '微波对射警戒节点', location: '室外', zone: 'Q区', triggerTime: '2026-10-28 16:25', status: '未处理', snapshot: asianGlassesImg },
-    { id: 'per-18', code: 'B2009OC001DH018', type: '周界告警', deviceName: '泄漏电缆周界探测器', location: '室外', zone: 'R区', triggerTime: '2026-10-28 11:15', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'per-19', code: 'B2009OC001DH019', type: '周界告警', deviceName: '周界脉冲防区主机', location: '室外', zone: 'S区', triggerTime: '2026-10-27 14:40', status: '未处理', snapshot: asianMaleImg },
-    { id: 'per-20', code: 'B2009OC001DH020', type: '周界告警', deviceName: '震动传感网关器', location: '室外', zone: 'T区', triggerTime: '2026-10-27 08:30', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'per-21', code: 'B2009OC001DH021', type: '周界告警', deviceName: '红外光栅周界节点', location: '室外', zone: 'U区', triggerTime: '2026-10-26 19:10', status: '已处理', snapshot: asianFemaleImg },
-    { id: 'per-22', code: 'B2009OC001DH022', type: '周界告警', deviceName: '周界主机03', location: '室外', zone: 'V区', triggerTime: '2026-10-26 13:00', status: '未处理', snapshot: asianMaleImg },
-    { id: 'per-23', code: 'B2009OC001DH023', type: '周界告警', deviceName: '微波对射收发机', location: '室外', zone: 'W区', triggerTime: '2026-10-25 17:35', status: '已处理', snapshot: asianGlassesImg },
-    { id: 'per-24', code: 'B2009OC001DH024', type: '周界告警', deviceName: '周界防翻越传感器08', location: '室外', zone: 'X区', triggerTime: '2026-10-25 10:15', status: '未处理', snapshot: asianFemaleImg },
-    { id: 'per-25', code: 'B2009OC001DH025', type: '周界告警', deviceName: '电子围栏高压控制箱', location: '室外', zone: 'Y区', triggerTime: '2026-10-24 15:25', status: '已处理', snapshot: asianMaleImg },
-  ]);
+  const [perimeterAlarms, setPerimeterAlarms] = useState(INITIAL_PERIMETER_ALARMS);
+
+  // 周界告警查询条件（默认覆盖全部 25 条记录的触发日期范围）
+  const [perimeterQueryStartDate, setPerimeterQueryStartDate] = useState('2026-10-24');
+  const [perimeterQueryEndDate, setPerimeterQueryEndDate] = useState('2026-11-06');
+  const [perimeterQueryKeyword, setPerimeterQueryKeyword] = useState('');
+
+  // 周界告警统计与过滤后的列表
+  const perimeterSummary = useMemo(
+    () => summarizePerimeterAlarms(perimeterAlarms),
+    [perimeterAlarms],
+  );
+  const filteredPerimeterAlarms = useMemo(
+    () => filterPerimeterAlarms(perimeterAlarms, {
+      startDate: perimeterQueryStartDate,
+      endDate: perimeterQueryEndDate,
+      keyword: perimeterQueryKeyword,
+    }),
+    [perimeterAlarms, perimeterQueryStartDate, perimeterQueryEndDate, perimeterQueryKeyword],
+  );
 
   // Temperature Abnormality Alarms List (25 items)
   const [temperatureAlarms, setTemperatureAlarms] = useState([
@@ -2003,7 +2001,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
               <div className="p-4 rounded-2xl bg-[#06122d] border border-cyan-500/40 relative overflow-hidden shadow-xl flex items-center justify-between">
                 <div>
                   <div className="text-xs text-slate-400 font-bold">本月周界告警</div>
-                  <div className="text-3xl font-bold font-mono text-cyan-300 mt-1">19</div>
+                  <div className="text-3xl font-bold font-mono text-cyan-300 mt-1">{perimeterSummary.total}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.4)]">
                   <ShieldAlert className="w-6 h-6 animate-pulse" />
@@ -2023,7 +2021,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
               <div className="p-4 rounded-2xl bg-[#06122d] border border-cyan-500/40 relative overflow-hidden shadow-xl flex items-center justify-between">
                 <div>
                   <div className="text-xs text-slate-400 font-bold">已处理</div>
-                  <div className="text-3xl font-bold font-mono text-emerald-400 mt-1">12</div>
+                  <div className="text-3xl font-bold font-mono text-emerald-400 mt-1">{perimeterSummary.handledCount}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.4)]">
                   <CheckCircle2 className="w-6 h-6" />
@@ -2033,7 +2031,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
               <div className="p-4 rounded-2xl bg-[#06122d] border border-cyan-500/40 relative overflow-hidden shadow-xl flex items-center justify-between">
                 <div>
                   <div className="text-xs text-slate-400 font-bold">未处理</div>
-                  <div className="text-3xl font-bold font-mono text-red-400 mt-1">7</div>
+                  <div className="text-3xl font-bold font-mono text-red-400 mt-1">{perimeterSummary.unhandledCount}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-red-500/20 border border-red-400/50 flex items-center justify-center text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.4)]">
                   <ShieldAlert className="w-6 h-6 animate-pulse" />
@@ -2047,22 +2045,32 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
                 <span className="text-slate-300 font-bold">查询:</span>
                 <input 
                   type="date" 
-                  defaultValue="2026-11-01" 
+                  value={perimeterQueryStartDate}
+                  onChange={(e) => { setPerimeterQueryStartDate(e.target.value); setPerimeterPage(1); }}
                   className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white focus:outline-none focus:border-cyan-400 font-mono text-xs" 
                 />
                 <span className="text-slate-500">-</span>
                 <input 
                   type="date" 
-                  defaultValue="2026-11-06" 
+                  value={perimeterQueryEndDate}
+                  onChange={(e) => { setPerimeterQueryEndDate(e.target.value); setPerimeterPage(1); }}
                   className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white focus:outline-none focus:border-cyan-400 font-mono text-xs" 
                 />
                 <input 
                   type="text" 
                   placeholder="周界设备/编号" 
+                  value={perimeterQueryKeyword}
+                  onChange={(e) => { setPerimeterQueryKeyword(e.target.value); setPerimeterPage(1); }}
                   className="px-3 py-2 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-xs w-36" 
                 />
                 <button 
-                  onClick={() => triggerToast('已重置周界告警查询条件')}
+                  onClick={() => {
+                    setPerimeterQueryStartDate('2026-10-24');
+                    setPerimeterQueryEndDate('2026-11-06');
+                    setPerimeterQueryKeyword('');
+                    setPerimeterPage(1);
+                    triggerToast('已重置周界告警查询条件');
+                  }}
                   className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold transition-all cursor-pointer"
                 >
                   重置
@@ -2097,7 +2105,7 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#133063]">
-                    {perimeterAlarms.slice((perimeterPage - 1) * 10, perimeterPage * 10).map((item, index) => (
+                    {filteredPerimeterAlarms.slice((perimeterPage - 1) * 10, perimeterPage * 10).map((item, index) => (
                       <tr key={item.id} className="hover:bg-[#081b42]/80 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white">{item.code}</td>
                         <td className="px-4 py-3.5 font-sans text-cyan-300 font-semibold">{item.type}</td>
@@ -2156,9 +2164,9 @@ export const AlarmsView: React.FC<AlarmsViewProps> = ({
 
               <PaginationControls
                 currentPage={perimeterPage}
-                totalItems={perimeterAlarms.length}
+                totalItems={filteredPerimeterAlarms.length}
                 onPageChange={setPerimeterPage}
-                onExport={() => handleExportCSV(perimeterAlarms, '周界告警_数据导出.csv')}
+                onExport={() => handleExportCSV(filteredPerimeterAlarms, '周界告警_数据导出.csv')}
               />
             </div>
           </div>
