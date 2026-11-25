@@ -36,6 +36,7 @@ import {
   InspectionTask, 
   MaintenancePlan, 
   MaintenancePlanListItem,
+  InspectionPlanListItem,
   SubsystemType,
   WorkOrderStatus 
 } from '../types/ibms';
@@ -44,6 +45,11 @@ import {
   filterMaintenancePlans,
   summarizeMaintenancePlans,
 } from '../data/maintenancePlans';
+import {
+  INITIAL_INSPECTION_PLAN_LIST,
+  filterInspectionPlans,
+  summarizeInspectionPlans,
+} from '../data/inspectionPlans';
 
 interface MaintenanceViewProps {
   devices: DeviceItem[];
@@ -126,38 +132,27 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
   const [supplierPage, setSupplierPage] = useState(1);
 
   // Inspection Plan states matching screenshot image_6756fb48.png (25 items for multi-page interaction)
-  const [inspectionPlanList, setInspectionPlanList] = useState([
-    { id: 'ip-25', name: '景观喷泉水泵控制柜巡检', type: '周期计划', deviceType: '给排水设备', startDate: '2026-11-08', endDate: '2027-11-08', frequency: '月检', status: '启用', creator: 'admin3' },
-    { id: 'ip-24', name: '车库CO传感器校准巡检', type: '周期计划', deviceType: '弱电系统', startDate: '2026-11-05', endDate: '2027-11-05', frequency: '季检', status: '启用', creator: 'admin2' },
-    { id: 'ip-23', name: '客梯扶梯急停按钮测试', type: '周期计划', deviceType: '特种设备', startDate: '2026-11-03', endDate: '2027-11-03', frequency: '周检', status: '启用', creator: 'admin1' },
-    { id: 'ip-22', name: '人脸识别门禁终端巡检', type: '周期计划', deviceType: '弱电系统', startDate: '2026-11-01', endDate: '2027-11-01', frequency: '月检', status: '启用', creator: 'admin4' },
-    { id: 'ip-21', name: '无负压供水设备巡检', type: '周期计划', deviceType: '给排水设备', startDate: '2026-10-20', endDate: '2027-10-20', frequency: '周检', status: '启用', creator: 'admin3' },
-    { id: 'ip-20', name: '气体灭火系统定期巡检', type: '周期计划', deviceType: '消防设备', startDate: '2026-10-10', endDate: '2027-10-10', frequency: '半年检', status: '启用', creator: 'admin2' },
-    { id: 'ip-19', name: '光伏发电设备月度巡检', type: '周期计划', deviceType: '电气设备', startDate: '2026-10-01', endDate: '2027-10-01', frequency: '月检', status: '启用', creator: 'admin1' },
-    { id: 'ip-18', name: '楼宇自控DDC控制器巡检', type: '周期计划', deviceType: '暖通设备', startDate: '2026-09-15', endDate: '2027-09-15', frequency: '月检', status: '启用', creator: 'admin4' },
-    { id: 'ip-17', name: '自动人行道闸安全巡检', type: '周期计划', deviceType: '安防设备', startDate: '2026-09-01', endDate: '2027-09-01', frequency: '月检', status: '启用', creator: 'admin3' },
-    { id: 'ip-16', name: '弱电机房UPS电源巡检', type: '周期计划', deviceType: '弱电系统', startDate: '2026-08-18', endDate: '2027-08-18', frequency: '周检', status: '启用', creator: 'admin2' },
-    { id: 'ip-15', name: '应急疏散指示灯专项巡检', type: '周期计划', deviceType: '消防设备', startDate: '2026-08-01', endDate: '2027-08-01', frequency: '季检', status: '启用', creator: 'admin1' },
-    { id: 'ip-14', name: '周界红外对射防区巡检', type: '周期计划', deviceType: '安防设备', startDate: '2026-07-10', endDate: '2027-07-10', frequency: '月检', status: '启用', creator: 'admin4' },
-    { id: 'ip-13', name: '冷却塔水质与电机巡检', type: '周期计划', deviceType: '暖通设备', startDate: '2026-07-01', endDate: '2027-07-01', frequency: '周检', status: '启用', creator: 'admin3' },
-    { id: 'ip-12', name: '水泵房防汛排涝专项巡检', type: '周期计划', deviceType: '给排水设备', startDate: '2026-06-15', endDate: '2027-06-15', frequency: '月检', status: '启用', creator: 'admin2' },
-    { id: 'ip-11', name: '高低压配电室日巡检', type: '周期计划', deviceType: '电气设备', startDate: '2026-06-01', endDate: '2027-06-01', frequency: '日检', status: '启用', creator: 'admin1' },
-    { id: 'ip-10', name: '园区夜间综合亮化巡检', type: '周期计划', deviceType: '照明设备', startDate: '2026-05-20', endDate: '2027-05-20', frequency: '日检', status: '启用', creator: 'admin4' },
-    { id: 'ip-9', name: '智能门禁半年巡检计划', type: '周期计划', deviceType: '弱电系统', startDate: '2026-05-01', endDate: '2027-05-01', frequency: '半年检', status: '启用', creator: 'admin2' },
-    { id: 'ip-8', name: '新风机组季度维护计划', type: '周期计划', deviceType: '暖通设备', startDate: '2026-04-15', endDate: '2027-04-15', frequency: '季检', status: '启用', creator: 'admin3' },
-    { id: 'ip-7', name: '电梯安全月度巡检计划', type: '周期计划', deviceType: '特种设备', startDate: '2026-04-01', endDate: '2027-04-01', frequency: '月检', status: '启用', creator: 'admin1' },
-    { id: 'ip-6', name: '视频监控周巡检计划', type: '周期计划', deviceType: '安防设备', startDate: '2026-03-10', endDate: '2027-03-10', frequency: '周检', status: '启用', creator: 'admin4' },
-    { id: 'ip-5', name: '变配电日常巡检计划', type: '周期计划', deviceType: '电气设备', startDate: '2026-03-01', endDate: '2027-03-01', frequency: '日检', status: '启用', creator: 'admin2' },
-    { id: 'ip-4', name: '消防系统季度巡检', type: '周期计划', deviceType: '消防设备', startDate: '2026-02-15', endDate: '2027-02-15', frequency: '季检', status: '启用', creator: 'admin3' },
-    { id: 'ip-3', name: '给排水巡检月计划', type: '周期计划', deviceType: '给排水设备', startDate: '2026-02-01', endDate: '2027-02-01', frequency: '月检', status: '启用', creator: 'admin1' },
-    { id: 'ip-2', name: '空调月计划', type: '周期计划', deviceType: '空调设备', startDate: '2026-01-15', endDate: '2027-01-15', frequency: '月检', status: '启用', creator: 'admin2' },
-    { id: 'ip-1', name: '照明月计划', type: '周期计划', deviceType: '照明设备', startDate: '2026-01-01', endDate: '2027-01-01', frequency: '月检', status: '启用', creator: 'admin1' },
-  ]);
+  const [inspectionPlanList, setInspectionPlanList] = useState(INITIAL_INSPECTION_PLAN_LIST);
 
   const [inspectionQueryName, setInspectionQueryName] = useState('');
   const [inspectionQueryType, setInspectionQueryType] = useState('周期计划');
-  const [inspectionStartDate, setInspectionStartDate] = useState('2026-11-01');
-  const [inspectionEndDate, setInspectionEndDate] = useState('2026-11-30');
+  const [inspectionStartDate, setInspectionStartDate] = useState('2026-01-01');
+  const [inspectionEndDate, setInspectionEndDate] = useState('2026-12-31');
+
+  // 巡检计划统计与过滤后的列表（查询条件变化时回到第 1 页）
+  const inspectionPlanSummary = useMemo(
+    () => summarizeInspectionPlans(inspectionPlanList),
+    [inspectionPlanList],
+  );
+  const filteredInspectionPlans = useMemo(
+    () => filterInspectionPlans(inspectionPlanList, {
+      name: inspectionQueryName,
+      type: inspectionQueryType,
+      startDate: inspectionStartDate,
+      endDate: inspectionEndDate,
+    }),
+    [inspectionPlanList, inspectionQueryName, inspectionQueryType, inspectionStartDate, inspectionEndDate],
+  );
 
   const [isAddInspModalOpen, setIsAddInspModalOpen] = useState(false);
   const [isEditInspModalOpen, setIsEditInspModalOpen] = useState(false);
@@ -165,9 +160,9 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
   const [selectedInspItem, setSelectedInspItem] = useState<any>(null);
 
   const [inspFormName, setInspFormName] = useState('');
-  const [inspFormType, setInspFormType] = useState('周期计划');
+  const [inspFormType, setInspFormType] = useState<InspectionPlanListItem['type']>('周期计划');
   const [inspFormDeviceType, setInspFormDeviceType] = useState('照明设备');
-  const [inspFormFrequency, setInspFormFrequency] = useState('年检');
+  const [inspFormFrequency, setInspFormFrequency] = useState<InspectionPlanListItem['frequency']>('年检');
   const [inspFormIsEnabled, setInspFormIsEnabled] = useState('是');
 
   // Inspection Record states matching screenshot image_d89ce9f3.png (25 items)
@@ -198,6 +193,15 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
     { id: 'rec-24', name: '车库CO传感器校准巡检', deviceType: '弱电系统', type: '季检', planTime: '2026-10-19 15:30', executor: '张海波', inspectTime: '2026-10-19 15:50', status: '已完成' },
     { id: 'rec-25', name: '景观喷泉水泵控制柜巡检', deviceType: '给排水设备', type: '月检', planTime: '2026-10-18 11:00', executor: '陈工', inspectTime: '2026-10-18 11:20', status: '已完成' },
   ]);
+  // 巡检任务统计由巡检记录算出：任务总数为记录条数，完成数为已完成记录条数
+  const inspectionRecordSummary = useMemo(
+    () => ({
+      total: inspectionRecordList.length,
+      completed: inspectionRecordList.filter((record) => record.status === '已完成').length,
+    }),
+    [inspectionRecordList],
+  );
+
   const [recordQueryExecutor, setRecordQueryExecutor] = useState('');
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
   const [selectedRecordItem, setSelectedRecordItem] = useState<any>(null);
@@ -1077,7 +1081,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="bg-[#06122d] border border-cyan-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl">
                 <div>
                   <div className="text-slate-400 text-xs">计划总数</div>
-                  <div className="text-2xl font-bold text-cyan-300 font-mono mt-1">10</div>
+                  <div className="text-2xl font-bold text-cyan-300 font-mono mt-1">{inspectionPlanSummary.total}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300">
                   <Clock className="w-6 h-6" />
@@ -1087,7 +1091,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="bg-[#06122d] border border-cyan-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl">
                 <div>
                   <div className="text-slate-400 text-xs">任务总数</div>
-                  <div className="text-2xl font-bold text-blue-300 font-mono mt-1">888</div>
+                  <div className="text-2xl font-bold text-blue-300 font-mono mt-1">{inspectionRecordSummary.total}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-300">
                   <FileText className="w-6 h-6" />
@@ -1097,7 +1101,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="bg-[#06122d] border border-cyan-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl">
                 <div>
                   <div className="text-slate-400 text-xs">任务完成总数</div>
-                  <div className="text-2xl font-bold text-emerald-300 font-mono mt-1">420</div>
+                  <div className="text-2xl font-bold text-emerald-300 font-mono mt-1">{inspectionRecordSummary.completed}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
                   <CheckCircle className="w-6 h-6" />
@@ -1113,21 +1117,21 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                   <input 
                     type="date" 
                     value={inspectionStartDate} 
-                    onChange={(e) => setInspectionStartDate(e.target.value)}
+                    onChange={(e) => { setInspectionStartDate(e.target.value); setInspPlanPage(1); }}
                     className="bg-transparent text-white focus:outline-none text-xs" 
                   />
                   <span className="text-slate-500">-</span>
                   <input 
                     type="date" 
                     value={inspectionEndDate} 
-                    onChange={(e) => setInspectionEndDate(e.target.value)}
+                    onChange={(e) => { setInspectionEndDate(e.target.value); setInspPlanPage(1); }}
                     className="bg-transparent text-white focus:outline-none text-xs" 
                   />
                 </div>
 
                 <select 
                   value={inspectionQueryType}
-                  onChange={(e) => setInspectionQueryType(e.target.value)}
+                  onChange={(e) => { setInspectionQueryType(e.target.value); setInspPlanPage(1); }}
                   className="px-3 py-1.5 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white focus:outline-none focus:border-cyan-400"
                 >
                   <option>周期计划</option>
@@ -1138,7 +1142,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                 <input 
                   type="text" 
                   value={inspectionQueryName}
-                  onChange={(e) => setInspectionQueryName(e.target.value)}
+                  onChange={(e) => { setInspectionQueryName(e.target.value); setInspPlanPage(1); }}
                   placeholder="计划名称" 
                   className="px-3 py-1.5 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400" 
                 />
@@ -1147,6 +1151,9 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                   onClick={() => {
                     setInspectionQueryName('');
                     setInspectionQueryType('周期计划');
+                    setInspectionStartDate('2026-01-01');
+                    setInspectionEndDate('2026-12-31');
+                    setInspPlanPage(1);
                     triggerToast('已重置查询条件');
                   }}
                   className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold transition-all cursor-pointer"
@@ -1190,7 +1197,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#133063]">
-                    {[...inspectionPlanList].sort((a, b) => b.startDate.localeCompare(a.startDate)).slice((inspPlanPage - 1) * 10, inspPlanPage * 10).map((item, index) => (
+                    {filteredInspectionPlans.slice((inspPlanPage - 1) * 10, inspPlanPage * 10).map((item, index) => (
                       <tr key={item.id} className="hover:bg-[#081b42]/80 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white">{(inspPlanPage - 1) * 10 + index + 1}</td>
                         <td className="px-4 py-3.5 font-sans font-bold text-white">{item.name}</td>
@@ -1245,7 +1252,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="p-4 bg-[#040e24] border-t border-[#133063] flex flex-wrap items-center justify-between text-xs font-mono text-slate-400">
                 <div className="flex items-center gap-2">
                   <span>总共</span>
-                  <span className="text-cyan-300 font-bold">{inspectionPlanList.length}</span>
+                  <span className="text-cyan-300 font-bold">{filteredInspectionPlans.length}</span>
                   <span>条</span>
                 </div>
 
@@ -1257,7 +1264,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                   >
                     上一页
                   </button>
-                  {Array.from({ length: Math.ceil(inspectionPlanList.length / 10) }, (_, i) => i + 1).map(p => (
+                  {Array.from({ length: Math.ceil(filteredInspectionPlans.length / 10) }, (_, i) => i + 1).map(p => (
                     <button
                       key={p}
                       onClick={() => setInspPlanPage(p)}
@@ -1271,8 +1278,8 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                     </button>
                   ))}
                   <button 
-                    disabled={inspPlanPage >= Math.ceil(inspectionPlanList.length / 10)}
-                    onClick={() => setInspPlanPage(p => Math.min(Math.ceil(inspectionPlanList.length / 10), p + 1))}
+                    disabled={inspPlanPage >= Math.ceil(filteredInspectionPlans.length / 10)}
+                    onClick={() => setInspPlanPage(p => Math.min(Math.ceil(filteredInspectionPlans.length / 10), p + 1))}
                     className="px-3 py-1 rounded bg-[#081b42] border border-[#133063] text-slate-300 hover:bg-[#0c285e] disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                   >
                     下一页
@@ -1408,7 +1415,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                         <span>*</span> <span>执行频率</span>
                       </label>
                       <div className="flex flex-wrap items-center gap-6 pt-1">
-                        {['年检', '季检', '月检', '周检', '日检'].map(freq => (
+                        {(['年检', '季检', '月检', '周检', '日检'] as const).map(freq => (
                           <label key={freq} className="flex items-center gap-2 cursor-pointer text-slate-200">
                             <input 
                               type="radio" 
@@ -1487,7 +1494,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                           triggerToast('请填写计划名称');
                           return;
                         }
-                        const newItem = {
+                        const newItem: InspectionPlanListItem = {
                           id: `ip-${Date.now()}`,
                           name: inspFormName,
                           type: inspFormType,
