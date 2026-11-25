@@ -271,6 +271,32 @@ export interface InspectionPlanSummary {
   enabledCount: number; // 启用中的计划数
 }
 
+// 巡检记录列表项（设备巡检-巡检记录页表格行）
+export interface InspectionRecordListItem {
+  id: string;
+  name: string;       // 计划名称
+  deviceType: string; // 设备类型
+  type: string;       // 巡检类型：日检 / 周检 / 月检 / 季检 / 半年检
+  planTime: string;   // 计划巡检时间 YYYY-MM-DD HH:mm
+  executor: string;   // 执行人
+  inspectTime: string; // 实际巡检时间 YYYY-MM-DD HH:mm 或 YYYY-MM-DD
+  status: '进行中' | '已完成'; // 巡检状态
+}
+
+// 巡检记录查询条件
+export interface InspectionRecordQuery {
+  executor: string;  // 执行人关键字（为空不过滤）
+  startDate: string; // 计划巡检日期下限 YYYY-MM-DD（为空不过滤）
+  endDate: string;   // 计划巡检日期上限 YYYY-MM-DD（为空不过滤）
+}
+
+// 巡检记录统计（本月口径：以记录中最晚的计划巡检月份为准）
+export interface InspectionRecordSummary {
+  total: number;      // 本月任务总数
+  completed: number;  // 本月已完成数
+  inProgress: number; // 本月进行中数
+}
+
 // 黑名单告警处理状态
 export type BlacklistAlarmStatus = '未处理' | '已处理';
 
