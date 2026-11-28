@@ -297,6 +297,32 @@ export interface InspectionRecordSummary {
   inProgress: number; // 本月进行中数
 }
 
+// 维保记录列表项（设备维保-维保记录页表格行）
+export interface MaintenanceRecordListItem {
+  id: string;
+  name: string;       // 计划名称
+  deviceType: string; // 设备类型
+  type: string;       // 维保类型：月保 / 季保 / 半年保 / 年保
+  planTime: string;   // 计划维保时间 YYYY-MM-DD HH:mm
+  executor: string;   // 执行人
+  inspectTime: string; // 实际维保时间 YYYY-MM-DD HH:mm 或 YYYY-MM-DD
+  status: '进行中' | '已完成'; // 维保状态
+}
+
+// 维保记录查询条件
+export interface MaintenanceRecordQuery {
+  executor: string;  // 执行人关键字（为空不过滤）
+  startDate: string; // 计划维保日期下限 YYYY-MM-DD（为空不过滤）
+  endDate: string;   // 计划维保日期上限 YYYY-MM-DD（为空不过滤）
+}
+
+// 维保记录统计（本月口径：以记录中最晚的计划维保月份为准）
+export interface MaintenanceRecordSummary {
+  total: number;      // 本月任务总数
+  completed: number;  // 本月已完成数
+  inProgress: number; // 本月进行中数
+}
+
 // 黑名单告警处理状态
 export type BlacklistAlarmStatus = '未处理' | '已处理';
 

@@ -55,6 +55,11 @@ import {
   filterInspectionRecords,
   summarizeInspectionRecords,
 } from '../data/inspectionRecords';
+import {
+  INITIAL_MAINTENANCE_RECORD_LIST,
+  filterMaintenanceRecords,
+  summarizeMaintenanceRecords,
+} from '../data/maintenanceRecords';
 
 interface MaintenanceViewProps {
   devices: DeviceItem[];
@@ -227,43 +232,26 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
   const [maintFormIsEnabled, setMaintFormIsEnabled] = useState('是');
 
   // Maintenance Record states matching screenshot image_f74efad8.png (25 items)
-  const [maintenanceRecordList, setMaintenanceRecordList] = useState([
-    { id: 'mrec-1', name: '中央空调末端维保计划', deviceType: '暖通设备', type: '月保', planTime: '2026-11-06 16:40', executor: '刘大牛', inspectTime: '2026-11-06 16:40', status: '进行中' },
-    { id: 'mrec-2', name: '变配电系统季度维保', deviceType: '电气设备', type: '季保', planTime: '2026-11-06 16:40', executor: '李小花', inspectTime: '2026-11-06 16:40', status: '进行中' },
-    { id: 'mrec-3', name: '消防泵房及喷淋维保', deviceType: '消防设备', type: '月保', planTime: '2026-11-05 10:30', executor: '张海波', inspectTime: '2026-11-05 10:35', status: '已完成' },
-    { id: 'mrec-4', name: '智能照明回路维保计划', deviceType: '照明设备', type: '半年保', planTime: '2026-11-04 14:00', executor: '王工', inspectTime: '2026-11-04 14:20', status: '已完成' },
-    { id: 'mrec-5', name: '电梯运行安全定期维保', deviceType: '特种设备', type: '月保', planTime: '2026-11-04 09:00', executor: '李姚明', inspectTime: '2026-11-04 09:10', status: '已完成' },
-    { id: 'mrec-6', name: '给排水管网及泵站维保', deviceType: '给排水设备', type: '月保', planTime: '2026-11-03 15:30', executor: '陈工', inspectTime: '2026-11-03 15:45', status: '已完成' },
-    { id: 'mrec-7', name: '视频监控与门禁系统维保', deviceType: '安防设备', type: '季保', planTime: '2026-11-03 11:00', executor: '赵主管', inspectTime: '2026-11-03 11:15', status: '已完成' },
-    { id: 'mrec-8', name: '新风机组滤网更换维保', deviceType: '暖通设备', type: '月保', planTime: '2026-11-02 13:20', executor: '刘大牛', inspectTime: '2026-11-02 13:40', status: '已完成' },
-    { id: 'mrec-9', name: '弱电机房精密空调维保', deviceType: '弱电系统', type: '月保', planTime: '2026-11-01 09:30', executor: '李小花', inspectTime: '2026-11-01', status: '进行中' },
-    { id: 'mrec-10', name: '园区夜景照明专业维保', deviceType: '照明设备', type: '季保', planTime: '2026-11-01 20:00', executor: '张海波', inspectTime: '2026-11-01', status: '进行中' },
-    { id: 'mrec-11', name: '冷水机组深度除垢保养', deviceType: '暖通设备', type: '半年保', planTime: '2026-10-31 10:00', executor: '李姚明', inspectTime: '2026-10-31 10:30', status: '已完成' },
-    { id: 'mrec-12', name: '高压柜断路器润滑检修', deviceType: '电气设备', type: '半年保', planTime: '2026-10-30 14:00', executor: '王工', inspectTime: '2026-10-30 14:25', status: '已完成' },
-    { id: 'mrec-13', name: '消火栓泵及压力阀测试', deviceType: '消防设备', type: '季保', planTime: '2026-10-29 09:30', executor: '陈工', inspectTime: '2026-10-29 09:50', status: '已完成' },
-    { id: 'mrec-14', name: '景观水系循环泵维护', deviceType: '给排水设备', type: '月保', planTime: '2026-10-28 15:10', executor: '赵主管', inspectTime: '2026-10-28 15:30', status: '已完成' },
-    { id: 'mrec-15', name: '人行闸机电机与齿轮保养', deviceType: '安防设备', type: '季保', planTime: '2026-10-27 11:00', executor: '刘大牛', inspectTime: '2026-10-27 11:20', status: '已完成' },
-    { id: 'mrec-16', name: '核心交换机散热除尘', deviceType: '弱电系统', type: '半年保', planTime: '2026-10-26 16:20', executor: '李小花', inspectTime: '2026-10-26 16:40', status: '已完成' },
-    { id: 'mrec-17', name: '消防水箱液位计校准', deviceType: '消防设备', type: '季保', planTime: '2026-10-25 10:00', executor: '张海波', inspectTime: '2026-10-25 10:20', status: '已完成' },
-    { id: 'mrec-18', name: '地下车库风机控制箱维保', deviceType: '暖通设备', type: '季保', planTime: '2026-10-24 14:30', executor: '李姚明', inspectTime: '2026-10-24 14:50', status: '已完成' },
-    { id: 'mrec-19', name: '光伏逆变器滤波清扫', deviceType: '电气设备', type: '半年保', planTime: '2026-10-23 09:15', executor: '王工', inspectTime: '2026-10-23 09:35', status: '已完成' },
-    { id: 'mrec-20', name: '客梯钢丝绳张力与平衡调整', deviceType: '特种设备', type: '季保', planTime: '2026-10-22 13:00', executor: '陈工', inspectTime: '2026-10-22 13:30', status: '已完成' },
-    { id: 'mrec-21', name: '弱电综合布线柜整理', deviceType: '弱电系统', type: '年保', planTime: '2026-10-21 15:40', executor: '赵主管', inspectTime: '2026-10-21 16:10', status: '已完成' },
-    { id: 'mrec-22', name: '稳压给排水泵加压测试', deviceType: '给排水设备', type: '季保', planTime: '2026-10-20 10:20', executor: '刘大牛', inspectTime: '2026-10-20 10:45', status: '已完成' },
-    { id: 'mrec-23', name: '楼宇亮化LED控制器校时', deviceType: '照明设备', type: '月保', planTime: '2026-10-19 19:30', executor: '李小花', inspectTime: '2026-10-19 19:45', status: '已完成' },
-    { id: 'mrec-24', name: '机房蓄电池组放电维保', deviceType: '电气设备', type: '半年保', planTime: '2026-10-18 14:00', executor: '张海波', inspectTime: '2026-10-18 14:30', status: '已完成' },
-    { id: 'mrec-25', name: '防盗告警探测器灵敏度测试', deviceType: '安防设备', type: '季保', planTime: '2026-10-17 09:00', executor: '陈工', inspectTime: '2026-10-17 09:20', status: '已完成' },
-  ]);
-  // 维保任务统计由维保记录算出：任务总数为记录条数，完成数为已完成记录条数
+  const [maintenanceRecordList, setMaintenanceRecordList] = useState(INITIAL_MAINTENANCE_RECORD_LIST);
+  // 维保记录统计由维保记录算出（本月口径：以最晚计划维保月份为准）
   const maintenanceRecordSummary = useMemo(
-    () => ({
-      total: maintenanceRecordList.length,
-      completed: maintenanceRecordList.filter((record) => record.status === '已完成').length,
-    }),
+    () => summarizeMaintenanceRecords(maintenanceRecordList),
     [maintenanceRecordList],
   );
 
   const [maintRecordQueryExecutor, setMaintRecordQueryExecutor] = useState('');
+  const [maintRecordQueryStartDate, setMaintRecordQueryStartDate] = useState('2026-10-01');
+  const [maintRecordQueryEndDate, setMaintRecordQueryEndDate] = useState('2026-11-30');
+
+  // 维保记录过滤后的列表（查询条件变化时回到第 1 页）
+  const filteredMaintenanceRecords = useMemo(
+    () => filterMaintenanceRecords(maintenanceRecordList, {
+      executor: maintRecordQueryExecutor,
+      startDate: maintRecordQueryStartDate,
+      endDate: maintRecordQueryEndDate,
+    }),
+    [maintenanceRecordList, maintRecordQueryExecutor, maintRecordQueryStartDate, maintRecordQueryEndDate],
+  );
   const [isMaintRecordModalOpen, setIsMaintRecordModalOpen] = useState(false);
   const [selectedMaintRecordItem, setSelectedMaintRecordItem] = useState<any>(null);
 
@@ -2297,7 +2285,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="bg-[#06122d] border border-cyan-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl">
                 <div>
                   <div className="text-slate-400 text-xs">本月任务总数</div>
-                  <div className="text-2xl font-bold text-cyan-300 font-mono mt-1">10</div>
+                  <div className="text-2xl font-bold text-cyan-300 font-mono mt-1">{maintenanceRecordSummary.total}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300">
                   <FileText className="w-6 h-6" />
@@ -2307,7 +2295,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="bg-[#06122d] border border-cyan-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl">
                 <div>
                   <div className="text-slate-400 text-xs">已完成</div>
-                  <div className="text-2xl font-bold text-emerald-300 font-mono mt-1">6</div>
+                  <div className="text-2xl font-bold text-emerald-300 font-mono mt-1">{maintenanceRecordSummary.completed}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
                   <CheckCircle className="w-6 h-6" />
@@ -2317,7 +2305,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="bg-[#06122d] border border-cyan-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl">
                 <div>
                   <div className="text-slate-400 text-xs">进行中</div>
-                  <div className="text-2xl font-bold text-amber-300 font-mono mt-1">4</div>
+                  <div className="text-2xl font-bold text-amber-300 font-mono mt-1">{maintenanceRecordSummary.inProgress}</div>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300">
                   <Clock className="w-6 h-6" />
@@ -2332,13 +2320,15 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                 <div className="flex items-center gap-1.5 bg-[#030a1c] border border-[#1b448a] rounded-xl px-3 py-1.5 font-mono">
                   <input 
                     type="date" 
-                    defaultValue="2026-11-01" 
+                    value={maintRecordQueryStartDate}
+                    onChange={(e) => { setMaintRecordQueryStartDate(e.target.value); setMaintRecordPage(1); }}
                     className="bg-transparent text-white focus:outline-none text-xs" 
                   />
                   <span className="text-slate-500">-</span>
                   <input 
                     type="date" 
-                    defaultValue="2026-11-30" 
+                    value={maintRecordQueryEndDate}
+                    onChange={(e) => { setMaintRecordQueryEndDate(e.target.value); setMaintRecordPage(1); }}
                     className="bg-transparent text-white focus:outline-none text-xs" 
                   />
                 </div>
@@ -2346,7 +2336,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                 <input 
                   type="text" 
                   value={maintRecordQueryExecutor}
-                  onChange={(e) => setMaintRecordQueryExecutor(e.target.value)}
+                  onChange={(e) => { setMaintRecordQueryExecutor(e.target.value); setMaintRecordPage(1); }}
                   placeholder="执行人" 
                   className="px-3 py-1.5 bg-[#030a1c] border border-[#1b448a] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400" 
                 />
@@ -2354,6 +2344,9 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                 <button 
                   onClick={() => {
                     setMaintRecordQueryExecutor('');
+                    setMaintRecordQueryStartDate('2026-10-01');
+                    setMaintRecordQueryEndDate('2026-11-30');
+                    setMaintRecordPage(1);
                     triggerToast('已重置查询条件');
                   }}
                   className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold transition-all cursor-pointer"
@@ -2381,7 +2374,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#133063]">
-                    {maintenanceRecordList.slice((maintRecordPage - 1) * 10, maintRecordPage * 10).map((item, index) => (
+                    {filteredMaintenanceRecords.slice((maintRecordPage - 1) * 10, maintRecordPage * 10).map((item, index) => (
                       <tr key={item.id} className="hover:bg-[#081b42]/80 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-white">{(maintRecordPage - 1) * 10 + index + 1}</td>
                         <td className="px-4 py-3.5 font-sans font-bold text-white">{item.name}</td>
@@ -2418,7 +2411,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <div className="p-4 bg-[#040e24] border-t border-[#133063] flex flex-wrap items-center justify-between text-xs font-mono text-slate-400">
                 <div className="flex items-center gap-2">
                   <span>总共</span>
-                  <span className="text-cyan-300 font-bold">{maintenanceRecordList.length}</span>
+                  <span className="text-cyan-300 font-bold">{filteredMaintenanceRecords.length}</span>
                   <span>条</span>
                 </div>
 
@@ -2430,7 +2423,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                   >
                     上一页
                   </button>
-                  {Array.from({ length: Math.ceil(maintenanceRecordList.length / 10) }, (_, i) => i + 1).map(p => (
+                  {Array.from({ length: Math.ceil(filteredMaintenanceRecords.length / 10) }, (_, i) => i + 1).map(p => (
                     <button
                       key={p}
                       onClick={() => setMaintRecordPage(p)}
@@ -2444,8 +2437,8 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                     </button>
                   ))}
                   <button 
-                    disabled={maintRecordPage >= Math.ceil(maintenanceRecordList.length / 10)}
-                    onClick={() => setMaintRecordPage(p => Math.min(Math.ceil(maintenanceRecordList.length / 10), p + 1))}
+                    disabled={maintRecordPage >= Math.ceil(filteredMaintenanceRecords.length / 10)}
+                    onClick={() => setMaintRecordPage(p => Math.min(Math.ceil(filteredMaintenanceRecords.length / 10), p + 1))}
                     className="px-3 py-1 rounded bg-[#081b42] border border-[#133063] text-slate-300 hover:bg-[#0c285e] disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                   >
                     下一页
